@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF xml:lang="en"
+         xmlns="http://usefulinc.com/ns/doap#"
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+         xmlns:foaf="http://xmlns.com/foaf/0.1/">
+  <Project rdf:about="https://github.com/rpm-software-management/librhsm">
+    <name>librhsm</name>
+    <homepage rdf:resource="https://github.com/rpm-software-management/librhsm" />
+    <shortdesc>
+      librhsm - Red Hat Subscription Manager library
+    </shortdesc>
+    <description>
+      Red Hat Subscription Manager library.
+    </description>
+    <bug-database rdf:resource="https://github.com/rpm-software-management/librhsm/issues" />
+    <download-page rdf:resource="https://github.com/rpm-software-management/librhsm/releases" />
+    <programming-language>C</programming-language>
+    <repository>
+      <GitRepository>
+        <location rdf:resource="https://github.com/rpm-software-management/librhsm.git" />
+        <browse rdf:resource="https://github.com/rpm-software-management/librhsm" />
+      </GitRepository>
+    </repository>
+    <maintainer>
+      <foaf:Person>
+        <foaf:name>Michael Mraka</foaf:name>
+        <foaf:mbox rdf:resource="mailto:michael.mraka@redhat.com" />
+      </foaf:Person>
+      <foaf:Person>
+        <foaf:name>Igor Gnatenko</foaf:name>
+        <foaf:mbox rdf:resource="mailto:ignatenko@redhat.com" />
+      </foaf:Person>
+    </maintainer>
+  </Project>
+</rdf:RDF>
