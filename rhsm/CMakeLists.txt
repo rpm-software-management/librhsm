@@ -22,11 +22,11 @@ target_include_directories (librhsm
                             PRIVATE ${OPENSSL_INCLUDE_DIRS}
                             PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")
 target_link_libraries (librhsm
-                       PRIVATE ${GLIB_LIBRARIES}
-                       PUBLIC ${GOBJECT_LIBRARIES}
-                       PUBLIC ${GIO_LIBRARIES}
-                       PUBLIC ${JSON_GLIB_LIBRARIES}
-                       PRIVATE ${OPENSSL_LIBRARIES})
+                       ${GLIB_LIBRARIES}
+                       ${GOBJECT_LIBRARIES}
+                       ${GIO_LIBRARIES}
+                       ${JSON_GLIB_LIBRARIES}
+                       ${OPENSSL_LIBRARIES})
 
 configure_file (librhsm.pc.in librhsm.pc @ONLY)
 
