@@ -28,7 +28,11 @@ target_link_libraries (librhsm
                        PUBLIC ${JSON_GLIB_LIBRARIES}
                        PRIVATE ${OPENSSL_LIBRARIES})
 
+configure_file (librhsm.pc.in librhsm.pc @ONLY)
+
 install (TARGETS librhsm
          LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install (FILES ${RHSM_HDRS}
          DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/rhsm)
+install (FILES ${CMAKE_CURRENT_BINARY_DIR}/librhsm.pc
+         DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)

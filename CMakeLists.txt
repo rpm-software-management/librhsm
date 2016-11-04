@@ -1,6 +1,8 @@
 cmake_minimum_required (VERSION 2.8.5)
 project (librhsm C)
 
+set (RHSM_VERSION 0)
+
 include (GNUInstallDirs)
 
 find_package (PkgConfig REQUIRED)
