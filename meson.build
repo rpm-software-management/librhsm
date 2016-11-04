@@ -1,6 +1,6 @@
 project('librhsm', 'c',
         license : 'LGPL-2.1+',
-        default_options : ['b_asneeded=True', 'b_lundef=True'],
+        default_options : ['b_asneeded=True', 'b_lundef=True', 'c_std=gnu11'],
         meson_version : '>=0.35.0')
 
 glib = dependency('glib-2.0', version : '>=2.44.0')
