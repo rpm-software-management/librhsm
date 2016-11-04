@@ -20,6 +20,10 @@
 
 #include <string.h>
 
+#if !JSON_CHECK_VERSION (1, 1, 2)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (JsonParser, g_object_unref)
+#endif
+
 /**
  * SECTION:rhsm-entitlement-certificate
  * @short_description: the entitlement certificate

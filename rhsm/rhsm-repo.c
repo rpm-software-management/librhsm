@@ -22,6 +22,10 @@
 
 #include "rhsm-repo.h"
 
+#if !JSON_CHECK_VERSION (1, 1, 2)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (JsonNode, json_node_free)
+#endif
+
 /*
  * get_arch:
  * @error: (nullable): an #GError.
