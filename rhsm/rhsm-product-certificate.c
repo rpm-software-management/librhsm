@@ -242,7 +242,7 @@ rhsm_product_certificate_discover (const gchar  *path,
   g_autoptr(GPtrArray) certs = g_ptr_array_new_with_free_func (g_object_unref);
 
   if (path == NULL)
-    path = "/etc/rhsm/ca";
+    path = "/etc/pki/product";
 
   g_autoptr(GDir) dir = g_dir_open (path, 0, error);
   if (dir == NULL)
