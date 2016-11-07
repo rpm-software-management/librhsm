@@ -117,7 +117,7 @@ rhsm_repo_from_certificates (RHSMEntitlementCertificate  *entitlement,
   g_autoptr(GKeyFile) repofile = g_key_file_new ();
 
   JsonNode *ent = rhsm_entitlement_certificate_get_entitlement (entitlement);
-  g_autoptr(JsonNode) contents = json_path_query ("$.products[*].content[]", ent, error);
+  g_autoptr(JsonNode) contents = json_path_query ("$.products[*].content[*]", ent, error);
   if (contents == NULL)
     return NULL;
 
