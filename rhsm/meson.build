@@ -7,7 +7,7 @@ hdrs = ['rhsm-entitlement-certificate.h',
              'rhsm.h']
 public_deps = [glib, gobject, gio, json_glib]
 private_deps = [openssl]
-_librhsm = shared_library('librhsm', srcs,
+_librhsm = shared_library('rhsm', srcs,
                           dependencies : public_deps + private_deps,
                           soversion : '0',
                           c_args : ['-DRHSM_COMPILATION'],
