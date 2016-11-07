@@ -201,7 +201,12 @@ rhsm_entitlement_certificate_discover (const gchar  *path,
   g_autoptr(GPtrArray) certs = g_ptr_array_new_with_free_func (g_object_unref);
 
   if (path == NULL)
-    path = "/etc/pki/entitlement";
+    {
+      if (g_file_test ("/etc/pki/entitlement-host", G_FILE_TEST_IS_DIR))
+        path = "/etc/pki/entitlement-host";
+      else
+        path = "/etc/pki/entitlement";
+    }
 
   g_autoptr(GDir) dir = g_dir_open (path, 0, error);
   if (dir == NULL)
