@@ -184,9 +184,9 @@ rhsm_repo_from_certificates (RHSMEntitlementCertificate  *entitlement,
       g_key_file_set_int64 (repofile, id, "metadata_expire", md_expire);
 
       const gchar *cert = rhsm_entitlement_certificate_get_file (entitlement);
-      g_key_file_set_string (repofile, id, "sslclientkey", cert);
+      g_key_file_set_string (repofile, id, "sslclientcert", cert);
       const gchar *key = rhsm_entitlement_certificate_get_keyfile (entitlement);
-      g_key_file_set_string (repofile, id, "sslclientcert", key);
+      g_key_file_set_string (repofile, id, "sslclientkey", key);
       g_key_file_set_string (repofile, id, "sslcacert", "/etc/rhsm/ca/redhat-uep.pem");
       g_key_file_set_boolean (repofile, id, "sslverify", TRUE);
 
