@@ -132,6 +132,18 @@ x509_get_ext_data_by_oid (X509         *cert,
 }
 
 /**
+ * rhsm_product_certificate_get_id:
+ * @cert: an #RHSMProductCertificate.
+ *
+ * Returns: an id.
+ */
+guint64
+rhsm_product_certificate_get_id (RHSMProductCertificate *cert)
+{
+  return cert->id;
+}
+
+/**
  * rhsm_product_certificate_get_name:
  * @cert: an #RHSMProductCertificate.
  *
