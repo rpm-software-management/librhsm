@@ -13,7 +13,8 @@ set_target_properties (librhsm PROPERTIES
                        OUTPUT_NAME rhsm
                        SOVERSION 0)
 target_compile_definitions (librhsm
-                            PRIVATE -DRHSM_COMPILATION)
+                            PRIVATE -DRHSM_COMPILATION
+                            PRIVATE -DG_LOG_DOMAIN="librhsm")
 target_include_directories (librhsm
                             PRIVATE ${GLIB_INCLUDE_DIRS}
                             PUBLIC ${GOBJECT_INCLUDE_DIRS}

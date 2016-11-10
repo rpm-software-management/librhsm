@@ -10,7 +10,7 @@ private_deps = [openssl]
 _librhsm = shared_library('rhsm', srcs,
                           dependencies : public_deps + private_deps,
                           soversion : '0',
-                          c_args : ['-DRHSM_COMPILATION'],
+                          c_args : ['-DRHSM_COMPILATION', '-DG_LOG_DOMAIN="librhsm"'],
                           install : true)
 librhsm = declare_dependency (include_directories : include_directories('.'),
                               link_with : _librhsm,
