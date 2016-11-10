@@ -239,50 +239,6 @@ rhsm_product_certificate_new_from_file (const gchar  *file,
                          NULL);
 }
 
-/**
- * rhsm_product_certificate_discover:
- * @path: (nullable): path where to search for certificates.
- * @error: (nullable): an #GError.
- *
- * Returns: (element-type RHSM.ProductCertificate) (transfer full): list of found product certificates.
- */
-GPtrArray *
-rhsm_product_certificate_discover (const gchar  *path,
-                                   GError      **error)
-{
-  g_autoptr(GError) local_error = NULL;
-  g_autoptr(GPtrArray) certs = g_ptr_array_new_with_free_func (g_object_unref);
-
-  if (path == NULL)
-    path = "/etc/pki/product";
-
-  g_autoptr(GDir) dir = g_dir_open (path, 0, error);
-  if (dir == NULL)
-    return NULL;
-
-  const gchar *fname = NULL;
-  while ((fname = g_dir_read_name (dir)) != NULL)
-    {
-      if (!g_str_has_suffix (fname, ".pem"))
-        continue;
-      g_autofree gchar *file = g_build_filename (path, fname, NULL);
-      RHSMProductCertificate *cert = rhsm_product_certificate_new_from_file (file, NULL);
-      if (cert != NULL)
-        g_ptr_array_add (certs, cert);
-    }
-
-  if (certs->len == 0)
-    {
-      g_set_error_literal (error,
-                           G_IO_ERROR,
-                           G_IO_ERROR_FAILED,
-                           "No certificates found");
-      return NULL;
-    }
-
-  return g_ptr_array_ref (certs);
-}
-
 static void
 rhsm_product_certificate_finalize (GObject *object)
 {

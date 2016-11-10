@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2016  Michael Mraka <michael.mraka@redhat.com>
  * Copyright (C) 2016  Igor Gnatenko <ignatenko@redhat.com>
  *
  * This library is free software; you can redistribute it and/or
@@ -24,14 +23,11 @@
 #endif
 
 #include <glib.h>
-
-#include "rhsm-entitlement-certificate.h"
-#include "rhsm-product-certificate.h"
+#include "rhsm-context.h"
 
 G_BEGIN_DECLS
 
-GKeyFile *rhsm_repo_from_certificates (RHSMEntitlementCertificate  *entitlement,
-                                       GPtrArray                   *products,
-                                       GError                     **error);
+gchar    *rhsm_utils_get_arch              (GError      **error);
+GKeyFile *rhsm_utils_yum_repo_from_context (RHSMContext  *ctx);
 
 G_END_DECLS

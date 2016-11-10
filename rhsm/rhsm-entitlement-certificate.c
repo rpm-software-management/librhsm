@@ -20,10 +20,6 @@
 
 #include <string.h>
 
-#if !JSON_CHECK_VERSION (1, 1, 2)
-G_DEFINE_AUTOPTR_CLEANUP_FUNC (JsonParser, g_object_unref)
-#endif
-
 /**
  * SECTION:rhsm-entitlement-certificate
  * @short_description: the entitlement certificate
@@ -151,11 +147,7 @@ parse_entitlement_data (const gchar  *data,
   g_autoptr(GInputStream) zstream = g_memory_input_stream_new_from_data (zdata, zlen, g_free);
   g_autoptr(GZlibDecompressor) decompressor = g_zlib_decompressor_new (G_ZLIB_COMPRESSOR_FORMAT_ZLIB);
   g_autoptr(GInputStream) cstream = g_converter_input_stream_new (zstream, G_CONVERTER (decompressor));
-#if JSON_CHECK_VERSION (1, 1, 2)
   g_autoptr(JsonParser) parser = json_parser_new_immutable ();
-#else
-  g_autoptr(JsonParser) parser = json_parser_new ();
-#endif
   if (!json_parser_load_from_stream (parser, cstream, NULL, error))
     return NULL;
 
@@ -184,55 +176,6 @@ rhsm_entitlement_certificate_new_from_file (const gchar  *file,
                          "certificate", certificate,
                          "file", file,
                          NULL);
-}
-
-/**
- * rhsm_entitlement_certificate_discover:
- * @path: (nullable): path where to search for certificates.
- * @error: (nullable): an #GError.
- *
- * Returns: (element-type RHSM.EntitlementCertificate) (transfer full): list of found entitlement certificates.
- */
-GPtrArray *
-rhsm_entitlement_certificate_discover (const gchar  *path,
-                                       GError      **error)
-{
-  g_autoptr(GError) local_error = NULL;
-  g_autoptr(GPtrArray) certs = g_ptr_array_new_with_free_func (g_object_unref);
-
-  if (path == NULL)
-    {
-      if (g_file_test ("/etc/pki/entitlement-host", G_FILE_TEST_IS_DIR))
-        path = "/etc/pki/entitlement-host";
-      else
-        path = "/etc/pki/entitlement";
-    }
-
-  g_autoptr(GDir) dir = g_dir_open (path, 0, error);
-  if (dir == NULL)
-    return NULL;
-
-  const gchar *fname = NULL;
-  while ((fname = g_dir_read_name (dir)) != NULL)
-    {
-      if (!g_str_has_suffix (fname, ".pem"))
-        continue;
-      g_autofree gchar *file = g_build_filename (path, fname, NULL);
-      RHSMEntitlementCertificate *cert = rhsm_entitlement_certificate_new_from_file (file, NULL);
-      if (cert != NULL)
-        g_ptr_array_add (certs, cert);
-    }
-
-  if (certs->len == 0)
-    {
-      g_set_error_literal (error,
-                           G_IO_ERROR,
-                           G_IO_ERROR_FAILED,
-                           "No certificates found");
-      return NULL;
-    }
-
-  return g_ptr_array_ref (certs);
 }
 
 static void

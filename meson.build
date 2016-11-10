@@ -8,10 +8,10 @@ project('librhsm', 'c',
         ],
         meson_version : '>=0.35.0')
 
-glib = dependency('glib-2.0', version : '>=2.44.0')
-gobject = dependency('gobject-2.0', version : '>=2.44.0')
-gio = dependency('gio-2.0', version : '>=2.44.0')
-json_glib = dependency('json-glib-1.0')
+glib = dependency('glib-2.0', version : '>=2.44')
+gobject = dependency('gobject-2.0', version : '>=2.44')
+gio = dependency('gio-2.0', version : '>=2.44')
+json_glib = dependency('json-glib-1.0', version : '>=1.2')
 openssl = dependency('openssl')
 
 subdir('rhsm')

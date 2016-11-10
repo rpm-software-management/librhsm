@@ -18,11 +18,20 @@
 
 #pragma once
 
-#define RHSM_INSIDE
+#if !defined (RHSM_INSIDE) && !defined (RHSM_COMPILATION)
+#error "Only <rhsm.h> can be included directly."
+#endif
 
-#include "rhsm-context.h"
-#include "rhsm-entitlement-certificate.h"
-#include "rhsm-product-certificate.h"
 #include "rhsm-utils.h"
 
-#undef RHSM_INSIDE
+G_BEGIN_DECLS
+
+gchar *rhsm_utils_str_replace                (gchar       **haystack,
+                                              const gchar  *needle,
+                                              const gchar  *replacement);
+gchar *rhsm_key_file_get_interpolated_string (GKeyFile     *key_file,
+                                              const gchar  *group_name,
+                                              const gchar  *key,
+                                              GError      **error);
+
+G_END_DECLS

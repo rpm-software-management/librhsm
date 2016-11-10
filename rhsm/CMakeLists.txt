@@ -1,14 +1,18 @@
 set (RHSM_SRCS
+     rhsm-context.c
      rhsm-entitlement-certificate.c
      rhsm-product-certificate.c
-     rhsm-repo.c)
+     rhsm-utils.c)
 set (RHSM_HDRS
+     rhsm-context.h
      rhsm-entitlement-certificate.h
      rhsm-product-certificate.h
-     rhsm-repo.h
+     rhsm-utils.h
      rhsm.h)
+set (RHSM_HDRS_PRIV
+     rhsm-utils-private.h)
 
-add_library (librhsm SHARED ${RHSM_SRCS})
+add_library (librhsm SHARED ${RHSM_SRCS} ${RHSM_HDRS} ${RHSM_HDRS_PRIV})
 set_target_properties (librhsm PROPERTIES
                        OUTPUT_NAME rhsm
                        SOVERSION 0)

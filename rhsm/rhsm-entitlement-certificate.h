@@ -40,11 +40,9 @@ typedef enum {
 
 #define RHSM_ENTITLEMENT_CERTIFICATE_ERROR rhsm_entitlement_certificate_error_quark ()
 
+GQuark                      rhsm_entitlement_certificate_error_quark     (void);
 RHSMEntitlementCertificate *rhsm_entitlement_certificate_new_from_file   (const gchar                 *file,
                                                                           GError                     **error);
-GPtrArray                  *rhsm_entitlement_certificate_discover        (const gchar                 *path,
-                                                                          GError                     **error);
-GQuark                      rhsm_entitlement_certificate_error_quark     (void);
 JsonNode                   *rhsm_entitlement_certificate_get_entitlement (RHSMEntitlementCertificate  *cert);
 const gchar                *rhsm_entitlement_certificate_get_file        (RHSMEntitlementCertificate  *cert);
 const gchar                *rhsm_entitlement_certificate_get_keyfile     (RHSMEntitlementCertificate  *cert);

@@ -1,10 +1,13 @@
-srcs = files('rhsm-entitlement-certificate.c',
+srcs = files('rhsm-context.c',
+             'rhsm-entitlement-certificate.c',
              'rhsm-product-certificate.c',
-             'rhsm-repo.c')
-hdrs = ['rhsm-entitlement-certificate.h',
+             'rhsm-utils.c')
+hdrs = ['rhsm-context.h',
+             'rhsm-entitlement-certificate.h',
              'rhsm-product-certificate.h',
-             'rhsm-repo.h',
+             'rhsm-utils.h',
              'rhsm.h']
+hdrs_private = files('rhsm-utils-private.h')
 public_deps = [glib, gobject, gio, json_glib]
 private_deps = [openssl]
 _librhsm = shared_library('rhsm', srcs,

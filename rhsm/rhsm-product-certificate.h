@@ -45,8 +45,6 @@ typedef enum {
 
 RHSMProductCertificate *rhsm_product_certificate_new_from_file (const gchar             *file,
                                                                 GError                 **error);
-GPtrArray              *rhsm_product_certificate_discover      (const gchar             *path,
-                                                                GError                 **error);
 GQuark                  rhsm_product_certificate_error_quark   (void);
 guint64                 rhsm_product_certificate_get_id        (RHSMProductCertificate  *cert);
 const gchar            *rhsm_product_certificate_get_name      (RHSMProductCertificate  *cert);
