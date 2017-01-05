@@ -20,6 +20,10 @@
 
 #include <string.h>
 
+#if !JSON_CHECK_VERSION (1, 2, 0)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (JsonParser, g_object_unref)
+#endif
+
 /**
  * SECTION:rhsm-entitlement-certificate
  * @short_description: the entitlement certificate
@@ -147,7 +151,11 @@ parse_entitlement_data (const gchar  *data,
   g_autoptr(GInputStream) zstream = g_memory_input_stream_new_from_data (zdata, zlen, g_free);
   g_autoptr(GZlibDecompressor) decompressor = g_zlib_decompressor_new (G_ZLIB_COMPRESSOR_FORMAT_ZLIB);
   g_autoptr(GInputStream) cstream = g_converter_input_stream_new (zstream, G_CONVERTER (decompressor));
+#if JSON_CHECK_VERSION (1, 2, 0)
   g_autoptr(JsonParser) parser = json_parser_new_immutable ();
+#else
+  g_autoptr(JsonParser) parser = json_parser_new ();
+#endif
   if (!json_parser_load_from_stream (parser, cstream, NULL, error))
     return NULL;
 

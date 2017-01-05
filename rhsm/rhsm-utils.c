@@ -27,6 +27,10 @@
 #include <gio/gio.h>
 #include <json-glib/json-glib.h>
 
+#if !JSON_CHECK_VERSION (1, 2, 0)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (JsonNode, json_node_free)
+#endif
+
 /*
  * rhsm_utils_str_replace:
  * @haystack: (inout): pointer to a nul-terminated string.
