@@ -195,24 +195,23 @@ rhsm_utils_yum_repo_from_context (RHSMContext *ctx)
   g_autoptr(GPtrArray) entitlements = rhsm_context_get_entitlement_certificates (ctx);
   g_autoptr(GPtrArray) products = rhsm_context_get_product_certificates (ctx);
 
-  if (entitlements->len > 0)
+  /* Get all available tags from each of the products */
+  g_autoptr(GHashTable) available_tags = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+  for (guint i = 0; i < products->len; i++)
     {
-      g_autoptr(GError) error = NULL;
-      RHSMEntitlementCertificate *entitlement = g_ptr_array_index (entitlements, 0);
+      RHSMProductCertificate *product = g_ptr_array_index (products, i);
+      g_auto(GStrv) tags = g_strsplit (rhsm_product_certificate_get_tags (product), ",", -1);
+      for (GStrv tag = tags; *tag != NULL; tag++)
+        g_hash_table_add (available_tags, g_strdup (*tag));
+    }
+
+  for (guint i = 0; i < entitlements->len; i++)
+    {
+      RHSMEntitlementCertificate *entitlement = g_ptr_array_index (entitlements, i);
       JsonNode *ent = rhsm_entitlement_certificate_get_entitlement (entitlement);
       g_autoptr(JsonNode) contents = json_path_query ("$.products[*].content[*]", ent, NULL);
       /* Even there is non-matching JsonPath, node will be empty array */
       g_assert_nonnull (contents);
-
-      /* Get all available tags from each of the products */
-      g_autoptr(GHashTable) available_tags = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-      for (guint i = 0; i < products->len; i++)
-        {
-          RHSMProductCertificate *product = g_ptr_array_index (products, i);
-          g_auto(GStrv) tags = g_strsplit (rhsm_product_certificate_get_tags (product), ",", -1);
-          for (GStrv tag = tags; *tag != NULL; tag++)
-            g_hash_table_add (available_tags, g_strdup (*tag));
-        }
 
       g_autoptr(GList) elements = json_array_get_elements (json_node_get_array (contents));
       const gchar *ctx_arch = rhsm_context_get_arch (ctx);
@@ -252,6 +251,14 @@ rhsm_utils_yum_repo_from_context (RHSMContext *ctx)
             enabled = json_object_get_boolean_member (repo, "enabled");
           if (id == NULL || name == NULL || path == NULL)
             continue; /* TODO: make some error reporting here */
+
+          /* Clashing repositories */
+          if (g_key_file_has_group (repofile, id))
+            {
+              g_debug ("Repository '%s' has been already added, skipping", id);
+              continue;
+            }
+
           g_autofree gchar *baseurl = g_strconcat (ctx_baseurl, path, NULL);
           g_key_file_set_string (repofile, id, "name", name);
           g_key_file_set_string (repofile, id, "baseurl", baseurl);
