@@ -7,7 +7,7 @@ project('librhsm', 'c',
           'c_std=gnu11',
           'warning_level=2',
         ],
-        meson_version : '>=0.35.0')
+        meson_version : '>=0.37.0')
 
 glib = dependency('glib-2.0', version : '>=2.44')
 gobject = dependency('gobject-2.0', version : '>=2.44')
