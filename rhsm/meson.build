@@ -24,4 +24,13 @@ librhsm = declare_dependency(
   dependencies : public_deps,
 )
 
+pkg.generate(
+  description : 'Red Hat Subscription Manager library',
+  name : meson.project_name(),
+  libraries : _librhsm,
+  requires : ['glib-2.0 >= 1.2', 'gobject-2.0 >= 2.44', 'gio-2.0 >= 2.44', 'json-glib-1.0 >= 1.2'],
+  requires_private : ['openssl'],
+  version : meson.project_version(),
+)
+
 install_headers(hdrs, subdir : 'rhsm')

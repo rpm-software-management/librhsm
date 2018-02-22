@@ -15,4 +15,6 @@ gio = dependency('gio-2.0', version : '>=2.44')
 json_glib = dependency('json-glib-1.0', version : '>=1.2')
 openssl = dependency('openssl')
 
+pkg = import('pkgconfig')
+
 subdir('rhsm')
