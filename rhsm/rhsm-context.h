@@ -51,3 +51,5 @@ void         rhsm_context_set_entitlement_cert_dir     (RHSMContext *ctx,
                                                         const gchar *entitlement_cert_dir);
 GPtrArray   *rhsm_context_get_product_certificates     (RHSMContext *ctx);
 GPtrArray   *rhsm_context_get_entitlement_certificates (RHSMContext *ctx);
+
+G_END_DECLS
