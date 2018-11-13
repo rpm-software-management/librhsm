@@ -246,9 +246,16 @@ rhsm_utils_yum_repo_from_context (RHSMContext *ctx)
           const gchar *id = json_object_get_string_member (repo, "label");
           const gchar *name = json_object_get_string_member (repo, "name");
           const gchar *path = json_object_get_string_member (repo, "path");
-          gboolean enabled = FALSE;
+
+          /*
+           * The "enabled" option defaults to "true".
+           * If a content (repository) is enabled, the option is missing in the data,
+           * most likely to save limited space in the certificate.
+           */
+          gboolean enabled = TRUE;
           if (json_object_has_member (repo, "enabled"))
             enabled = json_object_get_boolean_member (repo, "enabled");
+
           if (id == NULL || name == NULL || path == NULL)
             continue; /* TODO: make some error reporting here */
 
