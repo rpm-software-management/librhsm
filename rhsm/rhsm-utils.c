@@ -262,7 +262,7 @@ rhsm_utils_yum_repo_from_context (RHSMContext *ctx)
           g_autofree gchar *baseurl = g_strconcat (ctx_baseurl, path, NULL);
           g_key_file_set_string (repofile, id, "name", name);
           g_key_file_set_string (repofile, id, "baseurl", baseurl);
-          g_key_file_set_boolean (repofile, id, "enabled", enabled);
+          g_key_file_set_integer (repofile, id, "enabled", enabled ? 1 : 0);
 
           if (json_object_has_member (repo, "gpg_url"))
             {
