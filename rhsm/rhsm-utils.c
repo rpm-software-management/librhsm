@@ -230,7 +230,8 @@ rhsm_utils_yum_repo_from_context (RHSMContext *ctx)
           if (json_object_has_member (repo, "arches"))
             {
               JsonArray *arr = json_object_get_array_member (repo, "arches");
-              if (!rhsm_json_array_contains_string (arr, ctx_arch))
+              if (!rhsm_json_array_contains_string (arr, ctx_arch)
+                && !rhsm_json_array_contains_string (arr, "ALL"))
                 continue;
             }
 
