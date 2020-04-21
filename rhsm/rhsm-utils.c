@@ -181,6 +181,97 @@ rhsm_json_array_is_subset_of_hash_table (JsonArray  *array,
   return TRUE;
 }
 
+/*
+ * Join a baseurl (hostname) and url (full or relpath).
+ *
+ * If url is a full url, just return it. Otherwise combine
+ * it with base, skipping redundant seperators if needed.
+ *
+ * Simulate the behavior of subscription manager.
+ */
+static gchar *
+rhsm_url_base_join (const gchar *base,
+                    const gchar *url)
+{
+  /* handle special cases similar to subscription manager */
+  if (!url || *url == '\0')
+    return g_strdup ("");
+  if (strstr (url, "://"))
+    return g_strdup (url);
+  if (!base || *base == '\0')
+    return g_strdup (url);
+
+  /* parse URI, split to schema, host, and path */
+  g_autofree gchar *schema = NULL;
+  g_autofree gchar *host = NULL;
+  g_autofree gchar *path = NULL;
+  gchar *tmp = strstr (base, ":");
+  if (tmp)
+    schema = g_strndup (base, tmp - base);
+  if (schema)
+    {
+      if (tmp[1] == '/' && tmp[2] == '/')
+      {
+        gchar *tmp2 = strstr (tmp + 3, "/");
+        if (tmp2)
+          {
+            host = g_strndup (tmp + 3, tmp2 - tmp - 3);
+            path = g_strdup (tmp2);
+          }
+        else
+          host = g_strdup (tmp + 3);
+      }
+      else
+        path = g_strdup (tmp + 1);
+    }
+  else
+    path = g_strdup (base);
+
+  /* full_path is path from base + url */
+  g_autofree gchar *full_path = NULL;
+  if (path)
+    full_path = g_strconcat (path, "/", url, NULL);
+  else
+    full_path = g_strconcat ("/", url, NULL);
+
+  /* normalize full_path
+   * split to vector, copy vector but skip empty and "." items,
+   * for each ".." source item remove last item from destination
+   */
+  g_auto(GStrv) src_split_path = g_strsplit (full_path, "/", -1);
+  guint src_len = g_strv_length (src_split_path);
+  g_autofree gchar **dest_split_path = g_new0 (gchar *, src_len + 1);
+  guint dest_len = 0;
+  for (guint src_idx = 0; src_idx < src_len; ++src_idx)
+    {
+      gchar *src = src_split_path[src_idx];
+      if (*src == '\0' || strcmp (src, ".") == 0)
+        continue;
+      if (strcmp (src, "..") == 0)
+        {
+          if (dest_len > 0)
+            --dest_len;
+          continue;
+        }
+      dest_split_path[dest_len++] = src;
+    }
+  dest_split_path[dest_len] = NULL;
+
+  /* construct destination path */
+  g_autofree gchar *tmp_path = g_strjoinv ("/", dest_split_path);
+  g_autofree gchar *dest_path = NULL;
+  if (g_str_has_suffix (url, "/") || g_str_has_suffix (url, "/.") || g_str_has_suffix (url, "/.."))
+    dest_path = g_strconcat (tmp_path, "/", NULL);
+  else
+    dest_path = g_strdup (tmp_path);
+
+  /* construct and return final URI */
+  if (schema)
+    return g_strconcat (schema, "://", host ? host : "", "/", dest_path, NULL);
+  else
+    return g_strconcat ("/", dest_path, NULL);
+}
+
 /**
  * rhsm_utils_yum_repo_from_context:
  * @ctx: an #RHSMContext.
@@ -275,7 +366,8 @@ rhsm_utils_yum_repo_from_context (RHSMContext *ctx)
           if (json_object_has_member (repo, "gpg_url"))
             {
               const gchar *gpg_url = json_object_get_string_member (repo, "gpg_url");
-              g_key_file_set_string (repofile, id, "gpgkey", gpg_url);
+              g_autofree gchar *gpgkey = rhsm_url_base_join (ctx_baseurl, gpg_url);
+              g_key_file_set_string (repofile, id, "gpgkey", gpgkey);
               g_key_file_set_boolean (repofile, id, "gpgcheck", TRUE);
             }
           else
