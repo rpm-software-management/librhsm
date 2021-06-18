@@ -140,11 +140,11 @@ parse_entitlement_data (const gchar  *data,
     }
 
   gsize hlen = strlen (ENTITLEMENT_DATA_HEADER);
-  gchar *ent = g_strndup (start + hlen, end - start - hlen);
+  g_autofree gchar *ent = g_strndup (start + hlen, end - start - hlen);
 
   gsize zlen = 0;
   guchar *zdata = g_base64_decode_inplace (ent, &zlen);
-  g_autoptr(GInputStream) zstream = g_memory_input_stream_new_from_data (zdata, zlen, g_free);
+  g_autoptr(GInputStream) zstream = g_memory_input_stream_new_from_data (zdata, zlen, NULL);
   g_autoptr(GZlibDecompressor) decompressor = g_zlib_decompressor_new (G_ZLIB_COMPRESSOR_FORMAT_ZLIB);
   g_autoptr(GInputStream) cstream = g_converter_input_stream_new (zstream, G_CONVERTER (decompressor));
   g_autoptr(JsonParser) parser = json_parser_new_immutable ();
