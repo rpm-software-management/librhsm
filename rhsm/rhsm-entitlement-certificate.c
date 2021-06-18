@@ -140,7 +140,7 @@ parse_entitlement_data (const gchar  *data,
     }
 
   gsize hlen = strlen (ENTITLEMENT_DATA_HEADER);
-  gchar *ent = g_strndup (start + hlen, end - start - hlen);
+  g_autofree gchar *ent = g_strndup (start + hlen, end - start - hlen);
 
   gsize zlen = 0;
   guchar *zdata = g_base64_decode_inplace (ent, &zlen);
