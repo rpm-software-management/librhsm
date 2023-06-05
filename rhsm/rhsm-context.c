@@ -369,6 +369,10 @@ rhsm_context_new (void)
       entitlement_cert_dir = rhsm_key_file_get_interpolated_string (conf, "rhsm", "entitlementCertDir", NULL);
     }
 
+  /* Check rhsm.conf exists */
+  if (!g_file_test (conf_file, G_FILE_TEST_EXISTS))
+    g_debug ("Not found config file %s", conf_file);
+
   return g_object_new (RHSM_TYPE_CONTEXT,
                        "conf-file", conf_file,
                        "baseurl", baseurl,
@@ -538,8 +542,9 @@ rhsm_context_constructed (GObject *object)
         }
     }
 
-  /* If we have conf coming from /etc/rhsm-host, most probably we need to replace /etc/rhsm */
-  if (g_str_has_prefix (ctx->conf_file, CONFIG_DIR_HOST))
+  /* If we have conf existed and coming from /etc/rhsm-host, most probably we need to replace /etc/rhsm. */
+  if (g_file_test (ctx->conf_file, G_FILE_TEST_EXISTS) && 
+      g_str_has_prefix (ctx->conf_file, CONFIG_DIR_HOST))
     {
      rhsm_utils_str_replace (&ctx->ca_cert_dir, CONFIG_DIR, CONFIG_DIR_HOST);
      rhsm_utils_str_replace (&ctx->repo_ca_cert, CONFIG_DIR, CONFIG_DIR_HOST);
