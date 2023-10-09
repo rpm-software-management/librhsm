@@ -538,8 +538,9 @@ rhsm_context_constructed (GObject *object)
         }
     }
 
-  /* If we have conf coming from /etc/rhsm-host, most probably we need to replace /etc/rhsm */
-  if (g_str_has_prefix (ctx->conf_file, CONFIG_DIR_HOST))
+  /* If ca cert dir is not under /etc/rhsm-host and conf coming from /etc/rhsm-host, 
+     most probably we need to replace /etc/rhsm */
+  if (!g_str_has_prefix (ctx->ca_cert_dir, CONFIG_DIR_HOST) && g_str_has_prefix (ctx->conf_file, CONFIG_DIR_HOST))
     {
      rhsm_utils_str_replace (&ctx->ca_cert_dir, CONFIG_DIR, CONFIG_DIR_HOST);
      rhsm_utils_str_replace (&ctx->repo_ca_cert, CONFIG_DIR, CONFIG_DIR_HOST);
