@@ -482,6 +482,61 @@ rhsm_context_set_property (GObject      *object,
     }
 }
 
+/*
+ * path_has_prefix:
+ * @path: pointer to a null-terminated path string.
+ * @prefix: pointer to a null-terminated path prefix without a trailing slash.
+ *
+ * Returns: TRUE if the @prefix is a base path of the @path. FALSE otherwise.
+ */
+
+static gboolean
+path_has_prefix (const gchar *path, const gchar *prefix)
+{
+  if (!path || !prefix)
+    {
+      return FALSE;
+    }
+    {
+      const size_t prefix_length = strlen (prefix);
+      return (!strncmp (path, prefix, prefix_length) &&
+              (G_IS_DIR_SEPARATOR (path [prefix_length]) || path [prefix_length] == '\0'));
+    }
+}
+
+/*
+ * relocate_path:
+ * @path: (inout): pointer to a null-terminated string.
+ * @old_prefix: null-terminated path prefix without a trailing slash to relocate from.
+ * @new_prefix: null-terminated path prefix without a trailing slash to relocate to.
+ *
+ * If @path starts with @old_prefix path components, the @old_prefix path
+ * components will be replaced with @new_prefix.
+ *
+ * Returns: (transfer none): null-terminated string with the relocated path.
+ */
+static gchar *
+relocate_path (gchar **path, const gchar *old_prefix, const gchar *new_prefix)
+{
+  if (!path || !*path || !old_prefix || !new_prefix)
+    {
+      return NULL;
+    }
+
+  if (path_has_prefix (*path, old_prefix))
+    {
+      const size_t old_prefix_length = strlen (old_prefix);
+      GString *tmp = g_string_sized_new (strlen (*path) - old_prefix_length + strlen (new_prefix));
+      g_string_append (tmp, new_prefix);
+      g_string_append (tmp, *path + old_prefix_length);
+
+      g_free (*path);
+      *path = g_string_free (tmp, FALSE);
+    }
+
+  return *path;
+}
+
 static void
 rhsm_context_constructed (GObject *object)
 {
@@ -539,10 +594,10 @@ rhsm_context_constructed (GObject *object)
     }
 
   /* If we have conf coming from /etc/rhsm-host, most probably we need to replace /etc/rhsm */
-  if (g_str_has_prefix (ctx->conf_file, CONFIG_DIR_HOST))
+  if (path_has_prefix (ctx->conf_file, CONFIG_DIR_HOST))
     {
-     rhsm_utils_str_replace (&ctx->ca_cert_dir, CONFIG_DIR, CONFIG_DIR_HOST);
-     rhsm_utils_str_replace (&ctx->repo_ca_cert, CONFIG_DIR, CONFIG_DIR_HOST);
+     relocate_path (&ctx->ca_cert_dir, CONFIG_DIR, CONFIG_DIR_HOST);
+     relocate_path (&ctx->repo_ca_cert, CONFIG_DIR, CONFIG_DIR_HOST);
    }
 }
 
