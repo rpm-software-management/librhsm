@@ -345,6 +345,7 @@ rhsm_context_new (void)
   g_autoptr(GKeyFile) conf = g_key_file_new ();
   gboolean in_container = g_file_test (CONFIG_DIR_HOST, G_FILE_TEST_IS_DIR);
   gchar *conf_dir = NULL;
+  g_autoptr(GError) error = NULL;
   if (in_container)
     conf_dir = CONFIG_DIR_HOST;
   else
@@ -359,8 +360,19 @@ rhsm_context_new (void)
   g_autofree gchar *entitlement_cert_dir = NULL;
 
   /* Let's parse config-file */
-  if (g_key_file_load_from_file (conf, conf_file, G_KEY_FILE_NONE, NULL) &&
-      g_key_file_has_group (conf, "rhsm"))
+  if (!g_key_file_load_from_file (conf, conf_file, G_KEY_FILE_NONE, &error))
+    {
+      if (error && error->message)
+        {
+          g_debug ("Loading configuration file %s failed: %s",
+                  conf_file, error->message);
+        }
+       else
+        {
+          g_debug ("Loading configuration file %s failed", conf_file);
+        }
+    }
+  else if (g_key_file_has_group (conf, "rhsm"))
     {
       baseurl = rhsm_key_file_get_interpolated_string (conf, "rhsm", "baseurl", NULL);
       ca_cert_dir = rhsm_key_file_get_interpolated_string (conf, "rhsm", "ca_cert_dir", NULL);
