@@ -1,5 +1,5 @@
 project('librhsm', 'c',
-        version : '0.0.3',
+        version : '0.0.4',
         license : 'LGPL-2.1+',
         default_options : [
           'b_asneeded=True',
