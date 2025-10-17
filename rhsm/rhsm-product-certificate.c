@@ -487,6 +487,6 @@ rhsm_product_certificate_class_init (RHSMProductCertificateClass *klass)
 }
 
 static void
-rhsm_product_certificate_init (RHSMProductCertificate *cert)
+rhsm_product_certificate_init (G_GNUC_UNUSED RHSMProductCertificate *cert)
 {
 }
