@@ -698,6 +698,6 @@ rhsm_context_class_init (RHSMContextClass *klass)
 }
 
 static void
-rhsm_context_init (RHSMContext *ctx)
+rhsm_context_init (G_GNUC_UNUSED RHSMContext *ctx)
 {
 }

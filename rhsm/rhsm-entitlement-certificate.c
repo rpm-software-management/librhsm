@@ -359,6 +359,6 @@ rhsm_entitlement_certificate_class_init (RHSMEntitlementCertificateClass *klass)
 }
 
 static void
-rhsm_entitlement_certificate_init (RHSMEntitlementCertificate *cert)
+rhsm_entitlement_certificate_init (G_GNUC_UNUSED RHSMEntitlementCertificate *cert)
 {
 }
