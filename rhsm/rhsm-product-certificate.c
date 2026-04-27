@@ -109,15 +109,15 @@ x509_get_ext_data_by_oid (X509         *cert,
       return NULL;
     }
 
-  X509_EXTENSION *ext = X509_get_ext (cert, loc);
+  const X509_EXTENSION *ext = X509_get_ext (cert, loc);
   ASN1_OCTET_STRING *octet_str = X509_EXTENSION_get_data (ext);
   if (octet_str == NULL)
     return NULL;
 
-  const unsigned char *data = octet_str->data;
+  const unsigned char *data = ASN1_STRING_get0_data (octet_str);
   long len;
   int tag, xclass;
-  int ret = ASN1_get_object (&data, &len, &tag, &xclass, octet_str->length);
+  int ret = ASN1_get_object (&data, &len, &tag, &xclass, ASN1_STRING_length (octet_str));
   /* FIXME: is it proper way of handling error of ASN1_get_object() ? */
   if (ret & 0x80)
     {
