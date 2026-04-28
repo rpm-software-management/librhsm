@@ -25,6 +25,7 @@
 #include <openssl/err.h>
 #include <openssl/pem.h>
 #include <openssl/x509.h>
+#include <openssl/opensslv.h>
 
 #define X509_EXT_REDHAT_OID "1.3.6.1.4.1.2312.9"
 
@@ -109,8 +110,14 @@ x509_get_ext_data_by_oid (X509         *cert,
       return NULL;
     }
 
-  const X509_EXTENSION *ext = X509_get_ext (cert, loc);
-  ASN1_OCTET_STRING *octet_str = X509_EXTENSION_get_data (ext);
+#if OPENSSL_VERSION_MAJOR >= 4
+#define X509_QUAL const
+#else
+#define X509_QUAL
+#endif
+  X509_QUAL X509_EXTENSION *ext = X509_get_ext (cert, loc);
+  X509_QUAL ASN1_OCTET_STRING *octet_str = X509_EXTENSION_get_data (ext);
+#undef X509_QUAL
   if (octet_str == NULL)
     return NULL;
 
